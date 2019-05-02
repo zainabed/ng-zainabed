@@ -7,13 +7,12 @@ import { Injectable } from '@angular/core';
 export class SingleRoleValidator implements RoleValidator {
 
     private authorizationManager: AuthorizationManager;
-    
+
     constructor(securityFactory: SecurityFactory) {
         this.authorizationManager = securityFactory.getAuthorizationManager();
     }
 
-    isValid(roles: Set<string>): boolean {
-        let roleSet: Set<string> = new Set(roles);
-        return this.authorizationManager.isLogged() && this.authorizationManager.hasRoles(roleSet);
+    isValid(role: string): boolean {
+        return this.authorizationManager.isLogged() && this.authorizationManager.hasRole(role);
     }
 } 

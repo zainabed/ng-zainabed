@@ -6,14 +6,14 @@ describe("Unit test for SingleRoleValidator class.\n", () => {
     let singleRoleValidator: SingleRoleValidator;
     let authorizationManager: any;
     let securityFactory: any;
-    let roles: Set<string>;
+    let role: string;
 
     beforeEach(() => {
-        authorizationManager = jasmine.createSpyObj("AuthorizationManager", ["isLogged", "hasRoles"]);
+        authorizationManager = jasmine.createSpyObj("AuthorizationManager", ["isLogged", "hasRole"]);
         securityFactory = jasmine.createSpyObj("SecurityFactory", ["getAuthorizationManager"]);
         securityFactory.getAuthorizationManager.and.returnValue(authorizationManager);
         singleRoleValidator = new SingleRoleValidator(securityFactory);
-        roles = new Set("test");
+        role = "test";
     });
 
     it("Object of class can be instantiated.\n", () => {
@@ -27,24 +27,24 @@ describe("Unit test for SingleRoleValidator class.\n", () => {
 
     it("isValid method should invoke methods of authorizationManager.\n", () => {
         authorizationManager.isLogged.and.returnValue(true);
-        singleRoleValidator.isValid(roles);
+        singleRoleValidator.isValid(role);
         expect(authorizationManager.isLogged).toHaveBeenCalled();
-        expect(authorizationManager.hasRoles).toHaveBeenCalled();
+        expect(authorizationManager.hasRole).toHaveBeenCalled();
     });
 
     it("iValid should return false when isLogged method return false.\n", () => {
         authorizationManager.isLogged.and.returnValue(false);
-        expect(singleRoleValidator.isValid(roles)).toEqual(false);
+        expect(singleRoleValidator.isValid(role)).toEqual(false);
     });
 
-    it("iValid should return false when hasRoles method return false.\n", () => {
+    it("iValid should return false when hasRole method return false.\n", () => {
         authorizationManager.isLogged.and.returnValue(true);
-        authorizationManager.hasRoles.and.returnValue(false);
-        expect(singleRoleValidator.isValid(roles)).toEqual(false);
+        authorizationManager.hasRole.and.returnValue(false);
+        expect(singleRoleValidator.isValid(role)).toEqual(false);
     });
-    it("iValid should return true when hasRoles & isLogged methods return true.\n", () => {
+    it("iValid should return true when hasRole & isLogged methods return true.\n", () => {
         authorizationManager.isLogged.and.returnValue(true);
-        authorizationManager.hasRoles.and.returnValue(true);
-        expect(singleRoleValidator.isValid(roles)).toEqual(true);
+        authorizationManager.hasRole.and.returnValue(true);
+        expect(singleRoleValidator.isValid(role)).toEqual(true);
     });
 }); 
