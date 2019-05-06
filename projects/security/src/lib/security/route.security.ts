@@ -13,8 +13,15 @@ export class RouteSecurity implements CanActivate {
     }
 
     canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-        let roleValidator: RoleValidator = this.roleValidatorContext.get(next.data.type);
-        return roleValidator.isValid(next.data.roles);
+        try {
+            let roleValidator: RoleValidator = this.roleValidatorContext.get(next.data.type);
+            return roleValidator.isValid(next.data.roles);
+        } catch (error) {
+            return false;
+        }
+
     }
+
+
 
 }

@@ -2,17 +2,18 @@ import { RoleValidator } from './role.validator';
 import { AuthorizationManager, SecurityFactory } from '@zainabed/security';
 import { AuthorizationManagerFactory } from '../security/security.factory';
 import { Injectable } from '@angular/core';
+import { AbstractRoleValidator } from './abstract.role.valdator';
 
 @Injectable()
-export class SingleRoleValidator implements RoleValidator {
-
-    private authorizationManager: AuthorizationManager;
+export class SingleRoleValidator extends AbstractRoleValidator {
 
     constructor(securityFactory: SecurityFactory) {
-        this.authorizationManager = securityFactory.getAuthorizationManager();
+        super(securityFactory);
     }
 
-    isValid(role: string): boolean {
-        return this.authorizationManager.isLogged() && this.authorizationManager.hasRole(role);
+    validateRole(roles: Set<string>): boolean {
+        let role: string = roles.values().next().value;
+        return this.authorizationManager.hasRole(role);
     }
+
 } 
