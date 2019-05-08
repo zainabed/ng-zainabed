@@ -6,9 +6,12 @@ import { IfHasRolesDirective } from "./directive/if.has.roles.directive";
 import { AuthorizationManager } from '@zainabed/security';
 import { AuthorizationManagerFactory } from "./security/security.factory";
 import { Template } from './template/template';
-import { TemplateFactory } from './template/template.factory';
 import { RoleValidatorContextImpl } from './validator/role.validator.context.impl';
 import { RoleValidatorContext } from './validator/role.validator.context';
+import { SimpleTemplate } from './template/simple.template';
+import { SingleRoleValidator } from './validator/single.role.validator';
+import { AnyRoleValidator } from './validator/any.role.validator';
+import { MultiRoleValidator } from './validator/multi.role.validator';
 
 /**
  * 
@@ -17,25 +20,33 @@ import { RoleValidatorContext } from './validator/role.validator.context';
     declarations: [
         IfHasAnyRoleDirective,
         IfHasRolesDirective,
-        IfHasRoleDirective
-    ],
-    exports: [
-        IfHasAnyRoleDirective,
-        IfHasRolesDirective,
-        IfHasRoleDirective
+        IfHasRoleDirective,
+
     ],
     providers: [
+        SingleRoleValidator,
+        AnyRoleValidator,
+        MultiRoleValidator,
         RouteSecurity,
         {
             provide: AuthorizationManager,
             useFactory: AuthorizationManagerFactory.get,
         }, {
             provide: Template,
-            useFactory: TemplateFactory
+            useClass: SimpleTemplate
         }, {
             provide: RoleValidatorContext,
             useClass: RoleValidatorContextImpl
         }
+    ],
+    exports: [
+       // SingleRoleValidator,
+       // AnyRoleValidator,
+       // MultiRoleValidator,
+       // RouteSecurity,
+        IfHasAnyRoleDirective,
+        IfHasRolesDirective,
+        IfHasRoleDirective
     ]
 })
 export class SecurityModule {

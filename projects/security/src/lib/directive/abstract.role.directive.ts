@@ -1,61 +1,33 @@
-import { Input, ViewContainerRef, TemplateRef, OnInit } from "@angular/core";
+import { Input, ViewContainerRef, TemplateRef, OnInit, Injector } from "@angular/core";
 import { AuthorizationManager, Security, SecurityFactory } from '@zainabed/security';
+import { Template } from '../template/template';
+import { RoleValidatorContext } from '../validator/role.validator.context';
+import { RoleValidator } from '../validator/role.validator';
+import { TemplateValidator } from '../template/template.validator';
 
 
-export abstract class AbstractRoleDirective implements OnInit {
+export abstract class AbstractRoleDirective implements TemplateValidator {
 
-    protected _grantedRoles: Set<string>;
-    protected authorizationManager: AuthorizationManager;
-
+    protected roleValidator: RoleValidator;
+    protected roles: Set<string>;
+   
     constructor(
         protected templateRef: TemplateRef<any>,
-        protected viewContainerRef: ViewContainerRef) {
-        this.setGrantedRoles(null);
-        let securityFactory: SecurityFactory = Security.getSecurityFactory();
-        this.authorizationManager = securityFactory.getAuthorizationManager();
+        protected viewContainerRef: ViewContainerRef,
+        protected roleValidatorContext: RoleValidatorContext,
+        protected template: Template<any>) {
+    }
+    
+    isValid(): boolean {
+        return this.roleValidator.isValid(this.roles);
     }
 
-    ngOnInit(): void {
-       
+    setRoles(roles: string[]) {
+        this.roles = new Set(roles);
+        this.template.render(this, this.templateRef, this.viewContainerRef);
     }
 
-    /**
-     * 
-     * @param roles 
-     */
-    setGrantedRoles(roles: string[]) {
-        this._grantedRoles = new Set(roles);
+    getRoles(){
+        return this.roles;
     }
-
-    /**
-     * 
-     * @param role 
-     */
-    setGrantedRole(role: string) {
-        this._grantedRoles = new Set(role);
-    }
-
-    /**
-     * 
-     */
-    get grantedRoles(): Set<string> {
-        return this._grantedRoles;
-    }
-
-
-    /**
-     * 
-     */
-    updateView() {
-        console.log(this.viewContainerRef);
-        this.viewContainerRef.remove();
-        if (this.isValidRoles()) {
-            this.viewContainerRef.createEmbeddedView(this.templateRef);
-        }
-    }
-
-    /**
-     * 
-     */
-    abstract isValidRoles();
 }

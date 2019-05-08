@@ -4,30 +4,26 @@ import { TemplateValidator } from '../template/template.validator';
 import { RoleValidator } from '../validator/role.validator';
 import { RoleValidatorContext } from '../validator/role.validator.context';
 import { ROLE_VALIDATOR_TYPE } from "../validator/role.validator.type";
+import { AbstractRoleDirective } from '../../public_api';
+import { Injector } from '@angular/core';
 
-@Directive({ 
+@Directive({
     selector: "[ifHasAnyRole]"
 })
-export class IfHasAnyRoleDirective implements TemplateValidator {
-
-    roleValidator: RoleValidator;
-    roles: Set<string>;
+export class IfHasAnyRoleDirective extends AbstractRoleDirective {
 
     constructor(
-        private template: Template<any>,
         protected templateRef: TemplateRef<any>,
         protected viewContainerRef: ViewContainerRef,
-        private roleValidatorContext: RoleValidatorContext) {
-        this.roleValidator = this.roleValidatorContext.get(ROLE_VALIDATOR_TYPE.SINGLE);
+        protected roleValidatorContext: RoleValidatorContext,
+        protected template: Template<any>) {
+        super( templateRef, viewContainerRef, roleValidatorContext,template);
+        this.roleValidator = this.roleValidatorContext.get(ROLE_VALIDATOR_TYPE.ANY);
     }
 
     @Input()
     set ifHasAnyRole(roles: string[]) {
-        this.roles = new Set(roles);
-        this.template.render(this, this.templateRef, this.viewContainerRef);
+        this.setRoles(roles);
     }
 
-    isValid(): boolean {
-        return this.roleValidator.isValid(this.roles);
-    }
 }
