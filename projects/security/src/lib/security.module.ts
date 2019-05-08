@@ -23,15 +23,6 @@ import { MultiRoleValidator } from './validator/multi.role.validator';
         IfHasRoleDirective,
 
     ],
-    exports: [
-        SingleRoleValidator,
-        AnyRoleValidator,
-        MultiRoleValidator,
-        RouteSecurity,
-        IfHasAnyRoleDirective,
-        IfHasRolesDirective,
-        IfHasRoleDirective
-    ],
     providers: [
         SingleRoleValidator,
         AnyRoleValidator,
@@ -47,6 +38,15 @@ import { MultiRoleValidator } from './validator/multi.role.validator';
             provide: RoleValidatorContext,
             useClass: RoleValidatorContextImpl
         }
+    ],
+    exports: [
+       // SingleRoleValidator,
+       // AnyRoleValidator,
+       // MultiRoleValidator,
+       // RouteSecurity,
+        IfHasAnyRoleDirective,
+        IfHasRolesDirective,
+        IfHasRoleDirective
     ]
 })
 export class SecurityModule {
